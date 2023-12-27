@@ -1,0 +1,59 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"slices"
+	"strings"
+)
+
+func main() {
+	var total = 0
+	fmt.Println("hello world")
+
+	bytes, err := os.ReadFile("day4-input.txt")
+	check(err)
+
+	var text = string(bytes)
+
+	var lines = strings.Split(text, "\r\n")
+
+	var instances = make([]int, len(lines))
+
+	for r := 0; r < len(lines); r++ {
+		instances[r]++
+		var score = scratchcardMatches(lines[r])
+		for s := 0; s < score; s++ {
+			instances[s+r+1] += instances[r]
+		}
+
+		total += instances[r]
+
+		fmt.Printf("Instances: %d\n", instances[r])
+	}
+
+	fmt.Print("\n")
+	fmt.Print(total)
+}
+
+func scratchcardMatches(card string) int {
+	var parts = strings.Split(strings.Split(card, ":")[1], "|")
+	var winningNumbers = slices.DeleteFunc(strings.Split(parts[0], " "), func(n string) bool {
+		return n == ""
+	})
+	var ourNumbers = slices.DeleteFunc(strings.Split(parts[1], " "), func(n string) bool {
+		return n == ""
+	})
+
+	var score = 0
+
+	for v := 0; v < len(ourNumbers); v++ {
+		if slices.Contains(winningNumbers, ourNumbers[v]) {
+			score++
+		}
+	}
+
+	fmt.Printf("%s; %d\n", card, score)
+
+	return score
+}
