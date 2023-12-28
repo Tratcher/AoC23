@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func main() {
+func main_4b() {
 	var total = 0
 	fmt.Println("hello world")
 
