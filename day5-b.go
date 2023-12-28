@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func main_5a() {
+func main() {
 	fmt.Println("hello world")
 
 	bytes, err := os.ReadFile("day5-input.txt")
@@ -18,14 +18,18 @@ func main_5a() {
 	var lines = strings.Split(text, "\r\n")
 
 	// seeds: 79 14 55 13
+	// The values on the initial seeds: line come in pairs. Within each pair, the first value is the start of the range and the second value is the length of the range.
 	var seedline = lines[0]
 	var seedText = strings.Split(strings.Split(seedline, ": ")[1], " ")
-	var mappedValues = make([]int, len(seedText))
+	var mappedValues = make([][2]int, len(seedText)/2)
 
 	for i := 0; i < len(mappedValues); i++ {
-		number, err := strconv.Atoi(seedText[i])
+		number, err := strconv.Atoi(seedText[i*2])
 		check(err)
-		mappedValues[i] = number
+		mappedValues[i][0] = number
+		number, err = strconv.Atoi(seedText[i*2+1])
+		check(err)
+		mappedValues[i][1] = number
 	}
 
 	// Skip seeds, blank, and next title
@@ -40,49 +44,23 @@ func main_5a() {
 			lines = lines[len(maps)+2:]
 		}
 
-		applyMap(mappedValues, maps)
+		mappedValues = applyMapb(mappedValues, maps)
 	}
 
-	var lowest = mappedValues[0]
+	var lowest = mappedValues[0][0]
 	for i := 1; i < len(mappedValues); i++ {
-		if mappedValues[i] < lowest {
-			lowest = mappedValues[i]
+		if mappedValues[i][0] < lowest {
+			lowest = mappedValues[i][0]
 		}
 	}
 
 	fmt.Printf("Lowest: %d", lowest)
 }
 
-func readMap(lines []string) [][]int {
-	var lineCount = 0
-
-	// Scan until blank line
-	for i := 0; i < len(lines) && lines[i] != ""; i++ {
-		lineCount++
-	}
-
-	var maps = make([][]int, lineCount)
-
-	// Read Map
-	for i := 0; i < len(lines) && lines[i] != ""; i++ {
-		var line = lines[i]
-		var numberTexts = strings.Split(line, " ")
-		var numbers = make([]int, len(numberTexts))
-		for n := 0; n < len(numbers); n++ {
-			value, err := strconv.Atoi(numberTexts[n])
-			check(err)
-			numbers[n] = value
-		}
-
-		maps[i] = numbers
-	}
-
-	return maps
-}
-
-func applyMap(mappedValues []int, maps [][]int) {
+func applyMapb(mappedValues [][2]int, maps [][]int) [][2]int {
 	for v := 0; v < len(mappedValues); v++ {
-		value := mappedValues[v]
+		value := mappedValues[v][0]
+		valueRange := mappedValues[v][1]
 
 		for m := 0; m < len(maps); m++ {
 			destination := maps[m][0]
@@ -90,7 +68,14 @@ func applyMap(mappedValues []int, maps [][]int) {
 			length := maps[m][2]
 
 			if source <= value && value < source+length {
-				mappedValues[v] = value - source + destination
+				mappedValues[v][0] = value - source + destination
+
+				if valueRange > length {
+					diff := valueRange - length
+					mappedValues = append(mappedValues, [2]int{source + length, diff})
+					mappedValues[v][1] = length
+				}
+
 				break
 			}
 		}
@@ -98,4 +83,6 @@ func applyMap(mappedValues []int, maps [][]int) {
 
 	fmt.Print(mappedValues)
 	fmt.Println()
+
+	return mappedValues
 }
