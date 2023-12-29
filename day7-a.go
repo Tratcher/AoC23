@@ -16,7 +16,7 @@ const Type_FullHouse = 5
 const Type_FourOfAKind = 6
 const Type_FiveOfAKind = 7
 
-func main() {
+func main_7a() {
 	fmt.Println("hello world")
 
 	bytes, err := os.ReadFile("day7-input.txt")
