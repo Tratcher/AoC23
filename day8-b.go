@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func main() {
+func main_8b() {
 	fmt.Println("hello world")
 
 	bytes, err := os.ReadFile("day8-input.txt")
