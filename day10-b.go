@@ -12,7 +12,7 @@ const (
 	Boundary = 3
 )
 
-func main() {
+func main_10b() {
 	fmt.Println("hello world")
 
 	bytes, err := os.ReadFile("day10-input-test-b3.txt")
