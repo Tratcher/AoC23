@@ -26,7 +26,7 @@ const (
 	Start        byte = 'S'
 )
 
-func main() {
+func main_10a() {
 	fmt.Println("hello world")
 
 	bytes, err := os.ReadFile("day10-input.txt")
