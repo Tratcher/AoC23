@@ -13,7 +13,7 @@ const (
 	RequireBad  = 2
 )
 
-func main() {
+func main_12a() {
 	fmt.Println("hello world")
 
 	bytes, err := os.ReadFile("day12-input.txt")
